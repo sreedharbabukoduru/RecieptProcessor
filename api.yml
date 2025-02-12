@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+  title: Receipt Processor API
+  description: API for processing receipts and calculating points.
+  version: 1.0.0
+paths:
+  /receipts/process:
+    post:
+      summary: Process a receipt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                retailer:
+                  type: string
+                purchaseDate:
+                  type: string
+                  format: date
+                purchaseTime:
+                  type: string
+                  format: time
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      shortDescription:
+                        type: string
+                      price:
+                        type: string
+                total:
+                  type: string
+              required:
+                - retailer
+                - purchaseDate
+                - purchaseTime
+                - items
+                - total
+      responses:
+        '200':
+          description: Receipt processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          description: Invalid request
+          
+  /receipts/{id}/points:
+    get:
+      summary: Get points for a receipt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Points retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  points:
+                    type: integer
+        '404':
+          description: Receipt not found
